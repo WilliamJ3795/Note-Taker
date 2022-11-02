@@ -42,7 +42,7 @@ app.post("/api/notes", function(req, res) {
     });
   });
 
-  //function that returns a response of "note not found" if dataNotes does not contain a note.
+  //function that returns a response of "note not found" if userNotes does not contain a note.
 app.delete("/api/notes/:id", function(req, res) {
     const note = userNotes.find(i => i.id === req.params.id);
     if (!note) return res.send("note not found");
@@ -52,4 +52,9 @@ app.delete("/api/notes/:id", function(req, res) {
       console.log(err, data);
       res.send(true);
     });
+  });
+  // HTML Routes
+app.get("/notes", function(req, res) {
+    //function requests a response to get a string from notes.
+    res.sendFile(path.join(__dirname, "/public/notes.html"));
   });
