@@ -26,3 +26,18 @@ app.get("/api/notes", function(req, res) {
       res.json(JSON.parse(data));
     });
   });
+
+  // Returns the API notes and pushes to to the newNote array.
+app.post("/api/notes", function(req, res) {
+    const newNote = { id: uuid(), ...req.body };
+    userNotes.push(newNote);
+    fs.writeFile("db/db.json", JSON.stringify(userNotes), function(
+      //call back function for when data is made.
+      err,
+      data
+    ) {
+      console.log(err, data);
+      //sends the response to newNote
+      res.send(newNote);
+    });
+  });
