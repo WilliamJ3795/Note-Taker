@@ -22,7 +22,7 @@ app.use(express.static("public"));
 app.get("/api/notes", function(req, res) {
     fs.readFile("db/db.json", "utf8", function(err, data) {
       //Concatenates dataNotes to the array.
-      Notes = [].concat(JSON.parse(data));
+      userNotes = [].concat(JSON.parse(data));
       res.json(JSON.parse(data));
     });
   });
@@ -39,5 +39,17 @@ app.post("/api/notes", function(req, res) {
       console.log(err, data);
       //sends the response to newNote
       res.send(newNote);
+    });
+  });
+
+  //function that returns a response of "note not found" if dataNotes does not contain a note.
+app.delete("/api/notes/:id", function(req, res) {
+    const note = userNotes.find(i => i.id === req.params.id);
+    if (!note) return res.send("note not found");
+    const index = userNotes.indexOf(note);
+    dataNotes.splice(index, 1);
+    fs.writeFile("db/db.json", JSON.stringify(userNotes), function(err, data) {
+      console.log(err, data);
+      res.send(true);
     });
   });
