@@ -9,11 +9,20 @@ const fs = require("fs");
 //Uses callback funtions (req, res) and renders html elements based on passing arguments. 
 const app = express();
 
-
+// telling the web server what port to listen to
 const PORT = process.env.PORT || 3000;
-var dataNotes = [];
+let userNotes = [];
 
 // Middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static("public"));
+
+// API Routes - gets the file from index.js and reads it with fs.readfile.
+app.get("/api/notes", function(req, res) {
+    fs.readFile("db/db.json", "utf8", function(err, data) {
+      //Concatenates dataNotes to the array.
+      Notes = [].concat(JSON.parse(data));
+      res.json(JSON.parse(data));
+    });
+  });
