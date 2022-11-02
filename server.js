@@ -58,3 +58,9 @@ app.get("/notes", function(req, res) {
     //function requests a response to get a string from notes.
     res.sendFile(path.join(__dirname, "/public/notes.html"));
   });
+
+app.get("*", function(req, res) {
+    res.sendFile(path.join(__dirname, "/public/index.html"));
+  });
+  //listens for an assigned port otherwise port 3000 defined at the top.
+  app.listen(PORT, () => console.log(`App listening on port ${PORT}`));
