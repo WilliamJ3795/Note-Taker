@@ -1,20 +1,17 @@
 //needed dependencies
 const express = require("express");
-
-const path = require("path");
-//responsible for all file operations, asynchronous and synchronous
 const fs = require("fs");
+
 //Uses callback funtions (req, res) and renders html elements based on passing arguments. 
 const app = express();
-
 // telling the web server what port to listen to
 const PORT = process.env.PORT || 3000;
 
 // Middleware
+// Sets up the express app to handle data parsing
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(express.static("public"));
-
+app.use("/public/assets", express.static(__dirname + "/public/assets"));
 
   // Returns the API notes and pushes to to the newNote array.
   app.post("/api/notes", function (req, res) {
@@ -73,7 +70,7 @@ app.delete("/api/notes/:id", function (req, res) {
 app.put("/api/notes/:id", function(req, res) {
   const noteId = JSON.parse(req.params.id)
   console.log(noteId)
-  fs.readFile(__dirname + "/db/db.json", "utf8", function(error, notes) {
+  fs.readFile( "./db/db.json", "utf8", function(error, notes) {
     if (error ){
       return console.log(error)
     }
@@ -81,7 +78,7 @@ app.put("/api/notes/:id", function(req, res) {
 
     notes = notes.filter(val => val.id !== noteId)
 
-    fs.writeFile(__dirname +"/db/db.json", JSON.stringify(notes), function (error, data) {
+    fs.writeFile("./db/db.json", JSON.stringify(notes), function (error, data) {
       if (error) {
         return error
       }
@@ -94,15 +91,17 @@ app.put("/api/notes/:id", function(req, res) {
   // HTML Routes
 
   app.get("/", function(req, res) {
-    res.sendFile(path.join(__dirname, "/public/index.html"));
+    res.sendFile(path.join(__dirname, "/public/assets/index.html"));
   });
 
 app.get("/notes", function(req, res) {
     //function requests a response to get a string from notes.
-    res.sendFile(path.join(__dirname, "/public/notes.html"));
+    res.sendFile(path.join(__dirname, "/public/assets/notes.html"));
   });
 
 
   //listens for an assigned port otherwise port 3000 defined at the top.
 
-  app.listen(PORT, () => console.log(`App listening on PORT: http://localhost:${PORT}`));
+  app.listen(PORT, function () {
+    console.log("App listening on PORT " + PORT);
+  });
