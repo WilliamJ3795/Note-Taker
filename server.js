@@ -2,7 +2,7 @@
 const express = require("express");
 //uuid is the unique identifier for creating the unique id.  
 const uuid = require("uuid");
-//path is used for handling and transforming file paths. 
+
 const path = require("path");
 //responsible for all file operations, asynchronous and synchronous
 const fs = require("fs");
@@ -16,11 +16,11 @@ let userNotes = [];
 // Middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(express.static("public"));
+app.use("/public/assets", express.static(__dirname + "/public/assets"));
 
 // API Routes - gets the file from index.js and reads it with fs.readfile.
 app.get("/api/notes", function(req, res) {
-    fs.readFile("db/db.json", "utf8", function(err, data) {
+    fs.readFile("./db/db.json", "utf8", function(err, data) {
       //Concatenates dataNotes to the array.
       userNotes = [].concat(JSON.parse(data));
       res.json(JSON.parse(data));
@@ -29,9 +29,9 @@ app.get("/api/notes", function(req, res) {
 
   // Returns the API notes and pushes to to the newNote array.
 app.post("/api/notes", function(req, res) {
-    const newNote = { id: uuid(), ...req.body };
+    const newNote = { id: uuid, ...req.body };
     userNotes.push(newNote);
-    fs.writeFile("db/db.json", JSON.stringify(userNotes), function(
+    fs.writeFile("./db/db.json", JSON.stringify(userNotes), function(
       //call back function for when data is made.
       err,
       data
@@ -47,20 +47,23 @@ app.delete("/api/notes/:id", function(req, res) {
     const note = userNotes.find(i => i.id === req.params.id);
     if (!note) return res.send("note not found");
     const index = userNotes.indexOf(note);
-    dataNotes.splice(index, 1);
-    fs.writeFile("db/db.json", JSON.stringify(userNotes), function(err, data) {
+    userNotes.splice(index, 1);
+    fs.writeFile("./db/db.json", JSON.stringify(userNotes), function(err, data) {
       console.log(err, data);
       res.send(true);
     });
   });
   // HTML Routes
-app.get("/notes", function(req, res) {
-    //function requests a response to get a string from notes.
-    res.sendFile(path.join(__dirname, "/public/notes.html"));
+
+  app.get("/", function(req, res) {
+    res.sendFile(path.join(__dirname, "../public/assests/index.html"));
   });
 
-app.get("*", function(req, res) {
-    res.sendFile(path.join(__dirname, "/public/index.html"));
+app.get("/notes", function(req, res) {
+    //function requests a response to get a string from notes.
+    res.sendFile(path.join(__dirname, "../public/assets/notes.html"));
   });
+
+
   //listens for an assigned port otherwise port 3000 defined at the top.
   app.listen(PORT, () => console.log(`App listening on port ${PORT}`));
