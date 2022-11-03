@@ -1,7 +1,5 @@
 //needed dependencies
 const express = require("express");
-//uuid is the unique identifier for creating the unique id.  
-const uuid = require("uuid");
 
 const path = require("path");
 //responsible for all file operations, asynchronous and synchronous
@@ -11,12 +9,11 @@ const app = express();
 
 // telling the web server what port to listen to
 const PORT = process.env.PORT || 3000;
-let userNotes = [];
 
 // Middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use("/public/assets", express.static(__dirname + "/public/assets"));
+app.use(express.static("public"));
 
 
   // Returns the API notes and pushes to to the newNote array.
@@ -97,14 +94,16 @@ app.put("/api/notes/:id", function(req, res) {
   // HTML Routes
 
   app.get("/", function(req, res) {
-    res.sendFile(path.join(__dirname, "/public/assests/index.html"));
+    res.sendFile(path.join(__dirname, "/public/index.html"));
   });
 
 app.get("/notes", function(req, res) {
     //function requests a response to get a string from notes.
-    res.sendFile(path.join(__dirname, "/public/assets/notes.html"));
+    res.sendFile(path.join(__dirname, "/public/notes.html"));
   });
 
 
   //listens for an assigned port otherwise port 3000 defined at the top.
-  app.listen(PORT, () => console.log(`App listening on port ${PORT}`));
+  app.listen(PORT, function () {
+    console.log("App listening on PORT " + PORT);
+  });
