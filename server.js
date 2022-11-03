@@ -18,14 +18,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use("/public/assets", express.static(__dirname + "/public/assets"));
 
-// API Routes - gets the file from index.js and reads it with fs.readfile.
-app.get("/api/notes", function(req, res) {
-    fs.readFile("./db/db.json", "utf8", function(err, data) {
-      //Concatenates dataNotes to the array.
-      userNotes = [].concat(JSON.parse(data));
-      res.json(JSON.parse(data));
-    });
-  });
 
   // Returns the API notes and pushes to to the newNote array.
   app.post("/api/notes", function (req, res) {
@@ -47,7 +39,18 @@ app.get("/api/notes", function(req, res) {
         res.json(activeNote);
       })
     })
+  });
+
+  // Pull from db.json
+app.get("/api/notes", function (req, res) {
+  fs.readFile(__dirname + "/db/db.json", 'utf8', function (error, data) {
+    if (error) {
+      return console.log(error)
+    }
+    console.log("This is Notes", data)
+    res.json(JSON.parse(data))
   })
+});
   
 
   //function that returns a response of "note not found" if userNotes does not contain a note.
