@@ -1,6 +1,6 @@
 //responsible for all file operations, asynchronous and synchronous
-const fs = require("fs");
-const data = JSON.parse(fs.readFileSync("./db/db.json", "utf8"));
+let fs = require("fs");
+let data = JSON.parse(fs.readFileSync("./db/db.json", "utf8"));
 
 
 module.exports = function(app) {
