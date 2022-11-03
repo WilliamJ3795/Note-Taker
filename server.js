@@ -53,17 +53,26 @@ app.get("/api/notes", function (req, res) {
 });
   
 
-  //function that returns a response of "note not found" if userNotes does not contain a note.
-app.delete("/api/notes/:id", function(req, res) {
-    const note = userNotes.find(i => i.id === req.params.id);
-    if (!note) return res.send("note not found");
-    const index = userNotes.indexOf(note);
-    userNotes.splice(index, 1);
-    fs.writeFile("./db/db.json", JSON.stringify(userNotes), function(err, data) {
-      console.log(err, data);
-      res.send(true);
-    });
-  });
+app.delete("/api/notes/:id", function (req, res) {
+  const noteId = JSON.parse(req.params.id)
+  console.log(noteId)
+  fs.readFile(__dirname + "/db/db.json", 'utf8', function (error, notes) {
+    if (error) {
+      return console.log(error)
+    }
+    notes = JSON.parse(notes)
+
+    notes = notes.filter(val => val.id !== noteId)
+
+    fs.writeFile(__dirname + "/db/db.json", JSON.stringify(notes), function (error, data) {
+      if (error) {
+        return error
+      }
+      res.json(notes)
+    })
+  })
+});
+
   // HTML Routes
 
   app.get("/", function(req, res) {
