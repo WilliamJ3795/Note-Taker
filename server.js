@@ -104,6 +104,5 @@ app.get("/notes", function(req, res) {
 
 
   //listens for an assigned port otherwise port 3000 defined at the top.
-  app.listen(PORT, function () {
-    console.log("App listening on PORT " + PORT);
-  });
+
+  app.listen(PORT, () => console.log(`App listening on PORT: http://localhost:${PORT}`));
