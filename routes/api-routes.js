@@ -37,11 +37,11 @@ module.exports = function(app) {
     
     app.delete("/api/notes/:id", function(req, res) {
 
-        const noteId = req.params.id;
-        const newId = 0;
-        console.log(`Deleting note with id ${noteId}`);
+        let deleteNote = req.params.id;
+        let newId = 0;
+        console.log(`Deleting note with id ${deleteNote}`);
         data = data.filter(currentNote => {
-           return currentNote.id != noteId;
+           return currentNote.id != deleteNote;
         });
         for (currentNote of data) {
             currentNote.id = newId.toString();
@@ -50,5 +50,4 @@ module.exports = function(app) {
         fs.writeFileSync("./db/db.json", JSON.stringify(data));
         res.json(data);
     }); 
-
-}
+};
