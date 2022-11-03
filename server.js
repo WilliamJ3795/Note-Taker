@@ -28,19 +28,27 @@ app.get("/api/notes", function(req, res) {
   });
 
   // Returns the API notes and pushes to to the newNote array.
-app.post("/api/notes", function(req, res) {
-    const newNote = { id: uuid, ...req.body };
-    userNotes.push(newNote);
-    fs.writeFile("./db/db.json", JSON.stringify(userNotes), function(
-      //call back function for when data is made.
-      err,
-      data
-    ) {
-      console.log(err, data);
-      //sends the response to newNote
-      res.send(newNote);
-    });
-  });
+  app.post("/api/notes", function (req, res) {
+    fs.readFile(__dirname + "/db/db.json", 'utf8', function (error, notes) {
+      if (error) {
+        return console.log(error)
+      }
+      notes = JSON.parse(notes)
+  
+      const id = notes[notes.length - 1].id + 1
+      const newNote = { title: req.body.title, text: req.body.text, id: id }
+      const activeNote = notes.concat(newNote)
+  
+      fs.writeFile(__dirname + "/db/db.json", JSON.stringify(activeNote), function (error, data) {
+        if (error) {
+          return error
+        }
+        console.log(activeNote)
+        res.json(activeNote);
+      })
+    })
+  })
+  
 
   //function that returns a response of "note not found" if userNotes does not contain a note.
 app.delete("/api/notes/:id", function(req, res) {
@@ -56,12 +64,12 @@ app.delete("/api/notes/:id", function(req, res) {
   // HTML Routes
 
   app.get("/", function(req, res) {
-    res.sendFile(path.join(__dirname, "../public/assests/index.html"));
+    res.sendFile(path.join(__dirname, "/public/assests/index.html"));
   });
 
 app.get("/notes", function(req, res) {
     //function requests a response to get a string from notes.
-    res.sendFile(path.join(__dirname, "../public/assets/notes.html"));
+    res.sendFile(path.join(__dirname, "/public/assets/notes.html"));
   });
 
 
